@@ -20,7 +20,7 @@ class Event;
 class RenderSystem : public System
 {
 public:
-    bool Init(SDL_Window* window);
+    void Init(SDL_Window* window);
     void LoadTextures(std::vector<std::tuple<std::string, unsigned int>> texture_data);
     void RenderTilemap(std::vector<std::vector<unsigned int>>);
     void Update(float dt);

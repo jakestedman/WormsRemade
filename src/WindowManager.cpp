@@ -27,9 +27,8 @@ void WindowManager::Init(const char* title, const unsigned int x_pos, const unsi
         std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
 #endif
 
-        Quit(); // No window or renderer has been initialized so use SDL_Quit instead of quit
+        Quit();
     }
-
 #ifdef LOG_ENABLED
     std::cout << "WindowManager::Init - SDL Initialized." << std::endl;
 #endif
@@ -38,12 +37,11 @@ void WindowManager::Init(const char* title, const unsigned int x_pos, const unsi
 
     if(!m_window)
     {
-
 #ifdef LOG_ENABLED
         std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
 #endif
 
-        Quit(); // No window or renderer has been initialized so use SDL_Quit instead of quit
+        Quit();
     }
 
 #ifdef LOG_ENABLED
@@ -59,13 +57,11 @@ void WindowManager::HandleEvents()
     switch (event.type)
     {
     case SDL_QUIT:
-
 #ifdef LOG_ENABLED
         std::cout << "WindowManager::HandleEvents - Quitting.." << std::endl;
 #endif 
 
         Quit();
-        
         break;
     
     default:

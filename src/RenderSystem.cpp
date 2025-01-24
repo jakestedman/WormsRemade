@@ -16,7 +16,7 @@ extern Coordinator g_coordinator; // ??
     Later on this will be passed render screens (menus, levels etc) and told to render whatever is within it.
 
 */
-bool RenderSystem::Init(SDL_Window* window)
+void RenderSystem::Init(SDL_Window* window)
 {
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::RESIZED, RenderSystem::WindowSizeListener));
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::QUIT, RenderSystem::QuitListener));
@@ -54,7 +54,6 @@ bool RenderSystem::Init(SDL_Window* window)
     std::cout << "RenderSystem::Init - Renderer Created." << std::endl;
 #endif
 
-    return true;
 }
 
 void RenderSystem::LoadTextures(std::vector<std::tuple<std::string, unsigned int>> texture_data)
@@ -87,7 +86,7 @@ void RenderSystem::QuitListener(Event& event)
         std::cout << "RenderSystem::QuitListener - SDL Renderer Destroyed." << std::endl;
 #endif
     }
-    
+
 #ifdef LOG_ENABLED
     else
     {
