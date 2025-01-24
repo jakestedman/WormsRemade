@@ -22,7 +22,10 @@ static bool quit = false;
 void QuitListener(Event& event)
 {
 	quit = true;
-    std::cout << "App::QuitListener - Quitting.." << std::endl;
+
+#ifdef LOG_ENABLED
+    std::cout << "App::QuitListener - Quitting." << std::endl;
+#endif
 }
 
 int main()
@@ -153,7 +156,9 @@ int main()
 		dt = std::chrono::duration<float, std::chrono::seconds::period>(stop_time - start_time).count();
 	}
 
-    std::cout << "App::main - Quit!" << std::endl;
+#ifdef LOG_ENABLED
+    std::cout << "App::main - Quit." << std::endl;
+#endif 
 
 	return 0;
 }

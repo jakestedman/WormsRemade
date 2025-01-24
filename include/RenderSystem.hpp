@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_image.h>
+#include <vector>
 #include "System.hpp"
 
 /*
@@ -18,14 +20,14 @@ class Event;
 class RenderSystem : public System
 {
 public:
-    void Init(SDL_Window* window);
-    // void LoadTexture();
+    bool Init(SDL_Window* window);
+    void LoadTextures(std::vector<std::tuple<std::string, unsigned int>> texture_data);
+    void RenderTilemap(std::vector<std::vector<unsigned int>>);
     void Update(float dt);
 
 private:
     SDL_Window* m_window = nullptr;
     SDL_Renderer* m_renderer = nullptr;
-    bool m_is_running;
 
     void QuitListener(Event& event);
     void WindowSizeListener(Event& event);

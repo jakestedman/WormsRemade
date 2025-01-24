@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.27.4)
 
+add_compile_definitions(LOG_ENABLED)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -19,4 +21,4 @@ add_subdirectory(src)
 # cmake -S ../src/ -B .
 # 
 # Source dir    = -S
-# Build dir     = -B
+# Build dir     = -Bcd

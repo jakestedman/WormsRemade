@@ -16,7 +16,7 @@ extern Coordinator g_coordinator; // ??
     Later on this will be passed render screens (menus, levels etc) and told to render whatever is within it.
 
 */
-void RenderSystem::Init(SDL_Window* window)
+bool RenderSystem::Init(SDL_Window* window)
 {
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::RESIZED, RenderSystem::WindowSizeListener));
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::QUIT, RenderSystem::QuitListener));
@@ -32,25 +32,68 @@ void RenderSystem::Init(SDL_Window* window)
 
     m_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    if(m_renderer)
+    if(!m_renderer)
     {
-        SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-        std::cout << "RenderSystem::Init - Renderer Created!" << std::endl;
+#ifdef LOG_ENABLED
+        std::cerr << "RenderSystem::Init - Error: " << SDL_GetError() << std::endl;
+#endif
+
+        g_coordinator.SendEvent(Events::Window::QUIT);
     }
+
+    if(SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255))
+    {
+#ifdef LOG_ENABLED
+        std::cerr << "RenderSystem::Init - Error: " << SDL_GetError() << std::endl;
+#endif
+
+        g_coordinator.SendEvent(Events::Window::QUIT);
+    }
+
+#ifdef LOG_ENABLED
+    std::cout << "RenderSystem::Init - Renderer Created." << std::endl;
+#endif
+
+    return true;
+}
+
+void RenderSystem::LoadTextures(std::vector<std::tuple<std::string, unsigned int>> texture_data)
+{
+    // loop through textures and
 }
 
 void RenderSystem::Update(float dt)
-{
-    
+{    
+    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(m_renderer);
+    // update user position
+    // update tilemap for example any explosions
+
+    SDL_RenderPresent(m_renderer);
 }
+
+
 
 /*
     Listens for quit events
 */
 void RenderSystem::QuitListener(Event& event)
 {
-    SDL_DestroyRenderer(m_renderer);
-    std::cout << "RenderSystem::QuitListener - SDL Renderer Destroyed!" << std::endl;
+    if (m_renderer)
+    {
+        SDL_DestroyRenderer(m_renderer);
+
+#ifdef LOG_ENABLED
+        std::cout << "RenderSystem::QuitListener - SDL Renderer Destroyed." << std::endl;
+#endif
+    }
+    
+#ifdef LOG_ENABLED
+    else
+    {
+        std::cout << "RenderSystem::QuitListener - Nothing to do, renderer was not initialized." << std::endl;
+    }
+#endif
 }
 
 /*

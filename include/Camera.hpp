@@ -8,7 +8,6 @@ struct Camera
 {
 	Mat44 projectionTransform;
 
-
 	static Mat44 MakeProjectionTransform(float fov, float nearClip, float farClip, unsigned int viewWidth, unsigned int viewHeight)
 	{
 		float zClipBias0 =

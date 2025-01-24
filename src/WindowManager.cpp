@@ -11,31 +11,44 @@ std::unique_ptr<Map> map;
 
 extern Coordinator g_coordinator;
 
-void WindowManager::Init(const char* title, int x_pos, int y_pos, int width, int height, bool fullscreen)
+void WindowManager::Init(const char* title, const unsigned int x_pos, const unsigned int y_pos, const unsigned int width, const unsigned int height, bool fullscreen)
 {
     // To update to resize, for now, always fullscreen
-    int flags = 0;
+    unsigned int flags = 0;
 
     if (fullscreen)
     {
         flags = SDL_WINDOW_FULLSCREEN;
     }
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING))
     {
-        std::cout << "WindowManager::Init - SDL Initialized!" << std::endl;
+#ifdef LOG_ENABLED
+        std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
+#endif
 
-        m_window = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);  
-
-        if(m_window)
-        {
-            std::cout << "WindowManager::Init - Window Created!" << std::endl;
-        }
-        else
-        {
-            std::cerr << "WindowManager::Init - There was an error creating the SDL window." << std::endl;
-        }
+        Quit(); // No window or renderer has been initialized so use SDL_Quit instead of quit
     }
+
+#ifdef LOG_ENABLED
+    std::cout << "WindowManager::Init - SDL Initialized." << std::endl;
+#endif
+
+    m_window = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);  
+
+    if(!m_window)
+    {
+
+#ifdef LOG_ENABLED
+        std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
+#endif
+
+        Quit(); // No window or renderer has been initialized so use SDL_Quit instead of quit
+    }
+
+#ifdef LOG_ENABLED
+    std::cout << "WindowManager::Init - Window Created." << std::endl;
+#endif
 }
 
 void WindowManager::HandleEvents()
@@ -46,7 +59,11 @@ void WindowManager::HandleEvents()
     switch (event.type)
     {
     case SDL_QUIT:
-        std::cout << "WindowManager::HandleEvents - Quitting game.." << std::endl;
+
+#ifdef LOG_ENABLED
+        std::cout << "WindowManager::HandleEvents - Quitting.." << std::endl;
+#endif 
+
         Quit();
         
         break;
@@ -75,14 +92,29 @@ void WindowManager::Render()
 
 void WindowManager::Quit()
 {
-    // Destroy the window and send a quit event
-    SDL_DestroyWindow(m_window);
+    if (!m_window)
+    {
+        g_coordinator.SendEvent(Events::Window::QUIT);
+        SDL_Quit();
 
-    std::cout << "WindowManager::Quit - SDL Window Destroyed!" << std::endl;
+#ifdef DBG_ENABLED
+        std::cout << "WindowManager::Quit - SDL Cleaned up." << std::endl;
+#endif 
 
-    g_coordinator.SendEvent(Events::Window::QUIT);
-    SDL_Quit();
+    }
+    else
+    {
+        // Destroy the window and send a quit event
+        SDL_DestroyWindow(m_window);
 
-    std::cout << "WindowManager::Quit - SDL Cleaned up!" << std::endl;
+#ifdef LOG_ENABLED
+        std::cout << "WindowManager::Quit - SDL Window Destroyed." << std::endl;
+#endif
+        g_coordinator.SendEvent(Events::Window::QUIT);
+        SDL_Quit();
 
+#ifdef LOG_ENABLED
+        std::cout << "WindowManager::Quit - SDL Cleaned up." << std::endl;
+#endif
+    }
 }

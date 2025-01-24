@@ -20,13 +20,13 @@ public:
 	{
 		Mat44 result;
 
-		for (int row = 0; row < 4; ++row)
+		for (unsigned int row = 0; row < 4; ++row)
 		{
-			for (int col = 0; col < 4; ++col)
+			for (unsigned int col = 0; col < 4; ++col)
 			{
 				float sum = 0.0f;
 
-				for (int i = 0; i < 4; ++i)
+				for (unsigned int i = 0; i < 4; ++i)
 				{
 					sum += m[row][i] * rhs.m[i][col];
 				}
