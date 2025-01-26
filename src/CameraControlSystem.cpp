@@ -13,7 +13,7 @@ void CameraControlSystem::Init()
 
 void CameraControlSystem::Update(float dt)
 {
-	for (auto& entity : mEntities)
+	for (auto& entity : m_entities)
 	{
 		auto& transform = g_coordinator.GetComponent<Transform>(entity);
 

@@ -69,23 +69,6 @@ void WindowManager::HandleEvents()
     }
 }
 
-void WindowManager::Update()
-{
-    // player->Update();
-    // manager.Update();
-    // std::cout << new_player.GetComponent<PositionComponent>.GetX() << ", " << 
-    // new_player.GetComponent<PositionComponent>.GetY() << std::endl;
-}
-
-void WindowManager::Render()
-{
-    // SDL_RenderClear(renderer);
-    // map->DrawMap();
-    // player->Render();
-    // // this is where you add stuff to render
-    // SDL_RenderPresent(renderer);
-}
-
 void WindowManager::Quit()
 {
     if (!m_window)

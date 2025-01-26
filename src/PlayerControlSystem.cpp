@@ -16,7 +16,7 @@ void PlayerControlSystem::Init()
 
 void PlayerControlSystem::Update(float dt)
 {
-	//for (auto& entity : mEntities)
+	//for (auto& entity : m_entities)
 	//{
 	//	auto& transform = g_coordinator.Get<Transform>(entity);
 

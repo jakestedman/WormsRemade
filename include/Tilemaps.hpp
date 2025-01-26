@@ -2,8 +2,13 @@
 
 #include <vector>
 #include <tuple>
+/*
+    Tilemaps
 
-const std::vector<std::vector<unsigned int>> LEVEL_0_TILEMAP = 
+    0 - no texture, will not load
+    1 - * : 1 will equal the first element (index 0) of the corresponding texture data vector
+*/
+std::vector<std::vector<unsigned int>> const LEVEL_0_TILEMAP = 
 {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -35,8 +40,11 @@ const std::vector<std::vector<unsigned int>> LEVEL_0_TILEMAP =
     {1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1}
 };
 
-const std::vector<std::tuple<std::string, int>> LEVEL_0_TEXTURE_DATA =
+/*
+    Texture paths must be relative to the workspace base folder
+*/
+std::vector<const char*> const LEVEL_0_TEXTURE_DATA =
 {
-    {"path/to/texture", 1},
-    {"path/to/texture", 2}
+    "/assets/tiles/Tile0038.png",
+    "/assets/tiles/Tile0080.png"
 };

@@ -16,7 +16,7 @@ void PhysicsSystem::Init()
 
 void PhysicsSystem::Update(float dt)
 {
-	for (auto const& entity : mEntities)
+	for (auto const& entity : m_entities)
 	{
 		auto& rigidBody = g_coordinator.GetComponent<RigidBody>(entity);
 		auto& transform = g_coordinator.GetComponent<Transform>(entity);

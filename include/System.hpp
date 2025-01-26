@@ -7,5 +7,5 @@
 class System
 {
 public:
-	std::set<Entity> mEntities;
+	std::set<Entity> m_entities;
 };

@@ -14,6 +14,7 @@
 #include "PhysicsSystem.hpp"
 #include "RenderSystem.hpp"
 #include "WindowManager.hpp"
+#include "Tilemaps.hpp"
 
 Coordinator g_coordinator;
 static bool quit = false;
@@ -85,7 +86,7 @@ int main()
 		signature.set(g_coordinator.GetComponentType<Transform>());
 		g_coordinator.SetSystemSignature<RenderSystem>(signature);
 	}
-	render_system->Init(window_manager->GetWindow());
+	render_system->Init(window_manager->GetWindow(), LEVEL_0_TILEMAP, LEVEL_0_TEXTURE_DATA);
 
 	std::vector<Entity> entities(MAX_ENTITIES - 1);
 
