@@ -4,6 +4,7 @@
 #include "RenderSystem.hpp"
 #include "Camera.hpp"
 #include "Transform.hpp"
+#include "Renderable.hpp"
 #include "Coordinator.hpp"
 
 extern Coordinator g_coordinator; // ??
@@ -52,9 +53,10 @@ void RenderSystem::Init(SDL_Window* window, std::vector<std::vector<unsigned int
     g_coordinator.AddComponent(
         m_camera,
         Transform{
-            .position = Vec3(0.0f, 0.0f, 0.0f)
+            .position = Vec2(0.0f, 0.0f)
         });
 
+    LoadTilemap(tilemap, texture_paths);
 }
 
 /*
@@ -71,7 +73,7 @@ void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
     std::string whole_texture_path;
     unsigned int last_backslash;
     unsigned int second_last_backslash;
-    
+
     // load the textures and add them to the texture data vector
     for (const char* texture_path : texture_paths)
     {
@@ -98,19 +100,86 @@ void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
     }
 }
 
+void RenderSystem::LoadTilemap(std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_paths)
+{
+#ifdef LOG_ENABLED
+    std::cout << "RenderSystem::LoadTilemap - Loading tilemap.." << std::endl;
+#endif
+
+    // Create tilemap entities
+    for (size_t y = 0; y < tilemap.size(); y++)
+    {
+        for (size_t x = 0; x < tilemap[0].size(); x++)
+        {
+            // if we are not rendering anything in this tile skip
+            if (tilemap[y][x] == 0)
+            {
+                continue;
+            }
+
+            // loop through all of the tile id's we have and check if this tile id matches
+            for (size_t m_texture_data_index = 0; m_texture_data_index < m_texture_data.size(); m_texture_data_index++)
+            {
+                unsigned int tile_id = m_texture_data_index + 1;
+
+                // if they match create a new tile component
+                if (tilemap[y][x] == tile_id)
+                {
+                    Entity tile = g_coordinator.CreateEntity();
+
+                    g_coordinator.AddComponent(
+                        tile,
+                        Transform{
+                            .position = Vec2(x * 32.0f, y * 32.0f)
+                        });
+
+                    g_coordinator.AddComponent(
+                        tile,
+                        Renderable{
+                            .texture = m_texture_data[m_texture_data_index],
+                            .path = texture_paths[m_texture_data_index]
+                        });
+                }
+            }
+        }
+    }
+
+#ifdef LOG_ENABLED
+    std::cout << "RenderSystem::LoadTilemap - Tilemap loaded." << std::endl;
+#endif
+}
+
 void RenderSystem::Update(float dt)
 {    
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
     SDL_RenderClear(m_renderer);
 
-/*
+
     // get each tra
     for (auto const& entity : m_entities)
     {
         auto const& transform = g_coordinator.GetComponent<Transform>(entity);
         auto const& renderable = g_coordinator.GetComponent<Renderable>(entity);
+
+        //std::cout << "RenderSystem::Update - " << renderable.path << " to position: x " << transform.position.x << ", y " << transform.position.y << std::endl;
+
+        SDL_Rect src;
+        src.x = 0;
+        src.y = 0;
+        src.w = 32;
+        src.h = 32;
+
+        SDL_Rect dest;
+        dest.x = transform.position.x;
+        dest.y = transform.position.y;
+        dest.w = 32;
+        dest.h = 32;
+
+        // SDL_Rect dst;
+        // dst.x
+        SDL_RenderCopy(m_renderer, renderable.texture, &src, &dest);
     }
-*/
+
     // update user position
     // update tilemap for example any explosions
 

@@ -24,6 +24,7 @@ class RenderSystem : public System
 public:
     void Init(SDL_Window* window, std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_data);
     void LoadTextures(std::vector<const char*> const& texture_data);
+    void LoadTilemap(std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_paths);
     void RenderTilemap(std::vector<std::vector<unsigned int>>);
     void Update(float dt);
 

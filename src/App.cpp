@@ -34,7 +34,7 @@ int main()
 	g_coordinator.Init();
 
     std::unique_ptr<WindowManager> window_manager = std::make_unique<WindowManager>();
-	window_manager->Init("Worms Remade!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 840, 620, false); 
+	window_manager->Init("Worms Remade!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false); 
 
 	g_coordinator.AddEventListener(FUNCTION_LISTENER(Events::Window::QUIT, QuitListener));
 	g_coordinator.RegisterComponent<Transform>();

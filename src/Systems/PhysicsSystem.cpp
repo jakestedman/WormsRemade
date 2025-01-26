@@ -24,8 +24,8 @@ void PhysicsSystem::Update(float dt)
 		// Forces
 		auto const& gravity = g_coordinator.GetComponent<Gravity>(entity);
 
-		transform.position += rigidBody.velocity * dt;
+		// transform.position += rigidBody.velocity * dt;
 
-		rigidBody.velocity += gravity.force * dt;
+		// rigidBody.velocity += gravity.force * dt;
 	}
 }

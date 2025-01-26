@@ -1,7 +1,14 @@
-include_directories(${WormsRemade_SOURCE_DIR}/include)
+include_directories(
+    ${WormsRemade_SOURCE_DIR}/include/
+    ${WormsRemade_SOURCE_DIR}/include/Components
+    ${WormsRemade_SOURCE_DIR}/include/EcsCore
+    ${WormsRemade_SOURCE_DIR}/include/Maths
+    ${WormsRemade_SOURCE_DIR}/include/Systems
+    ${WormsRemade_SOURCE_DIR}/include/Utilities
+)
 
-set(CppFiles "App.cpp" "WindowManager.cpp" "CameraControlSystem.cpp" "PhysicsSystem.cpp" "PlayerControlSystem.cpp" "RenderSystem.cpp")
-list(APPEND CppFiles "App.cpp" "WindowManager.cpp" "CameraControlSystem.cpp" "PhysicsSystem.cpp" "PlayerControlSystem.cpp" "RenderSystem.cpp")
+set(CppFiles "App.cpp" "WindowManager.cpp" "Systems/CameraControlSystem.cpp" "Systems/PhysicsSystem.cpp" "Systems/PlayerControlSystem.cpp" "Systems/RenderSystem.cpp")
+list(APPEND CppFiles "App.cpp" "WindowManager.cpp" "Systems/CameraControlSystem.cpp" "Systems/PhysicsSystem.cpp" "Systems/PlayerControlSystem.cpp" "Systems/RenderSystem.cpp")
 
 add_executable(${PROJECT_NAME} ${CppFiles})
 
