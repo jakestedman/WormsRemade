@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Logger.hpp"
 #include <SDL.h>
 
 class WindowManager

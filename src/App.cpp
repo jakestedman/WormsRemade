@@ -15,6 +15,7 @@
 #include "RenderSystem.hpp"
 #include "WindowManager.hpp"
 #include "Tilemaps.hpp"
+#include "Logger.hpp"
 
 Coordinator g_coordinator;
 static bool quit = false;
@@ -24,9 +25,7 @@ void QuitListener(Event& event)
 {
 	quit = true;
 
-#ifdef LOG_ENABLED
-    std::cout << "App::QuitListener - Quitting." << std::endl;
-#endif
+	LOG("Quitting.");
 }
 
 int main()
@@ -34,7 +33,7 @@ int main()
 	g_coordinator.Init();
 
     std::unique_ptr<WindowManager> window_manager = std::make_unique<WindowManager>();
-	window_manager->Init("Worms Remade!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false); 
+	window_manager->Init("Worms Remade!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 736, false); 
 
 	g_coordinator.AddEventListener(FUNCTION_LISTENER(Events::Window::QUIT, QuitListener));
 	g_coordinator.RegisterComponent<Transform>();
@@ -157,9 +156,7 @@ int main()
 		dt = std::chrono::duration<float, std::chrono::seconds::period>(stop_time - start_time).count();
 	}
 
-#ifdef LOG_ENABLED
-    std::cout << "App::main - Quit." << std::endl;
-#endif 
+	LOG("Quit.");
 
 	return 0;
 }

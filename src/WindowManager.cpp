@@ -3,6 +3,7 @@
 
 #include "Coordinator.hpp"
 #include "WindowManager.hpp"
+#include "Logger.hpp"
 
 /*
 std::unique_ptr<GameObject> player; // cannot be changed so could be shared
@@ -23,30 +24,22 @@ void WindowManager::Init(const char* title, const unsigned int x_pos, const unsi
 
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
-#ifdef LOG_ENABLED
-        std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
-#endif
+        LOGERR(SDL_GetError());
 
         Quit();
     }
-#ifdef LOG_ENABLED
-    std::cout << "WindowManager::Init - SDL Initialized." << std::endl;
-#endif
+    LOG("SDL initialized.");
 
     m_window = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);  
 
     if(!m_window)
     {
-#ifdef LOG_ENABLED
-        std::cerr << "WindowManager::Init - Error: " << SDL_GetError() << std::endl;
-#endif
+        LOGERR(SDL_GetError());
 
         Quit();
     }
 
-#ifdef LOG_ENABLED
-    std::cout << "WindowManager::Init - Window Created." << std::endl;
-#endif
+    LOG("Window created.");
 }
 
 void WindowManager::HandleEvents()
@@ -57,9 +50,7 @@ void WindowManager::HandleEvents()
     switch (event.type)
     {
     case SDL_QUIT:
-#ifdef LOG_ENABLED
-        std::cout << "WindowManager::HandleEvents - Quitting.." << std::endl;
-#endif 
+        LOG("Quitting..");
 
         Quit();
         break;
@@ -76,24 +67,17 @@ void WindowManager::Quit()
         g_coordinator.SendEvent(Events::Window::QUIT);
         SDL_Quit();
 
-#ifdef DBG_ENABLED
-        std::cout << "WindowManager::Quit - SDL Cleaned up." << std::endl;
-#endif 
-
+        LOG("SDL cleaned up.");
     }
     else
     {
         // Destroy the window and send a quit event
         SDL_DestroyWindow(m_window);
 
-#ifdef LOG_ENABLED
-        std::cout << "WindowManager::Quit - SDL Window Destroyed." << std::endl;
-#endif
+        LOG("SDL window destroyed.");
         g_coordinator.SendEvent(Events::Window::QUIT);
         SDL_Quit();
 
-#ifdef LOG_ENABLED
-        std::cout << "WindowManager::Quit - SDL Cleaned up." << std::endl;
-#endif
+        LOG("SDL cleaned up.");
     }
 }

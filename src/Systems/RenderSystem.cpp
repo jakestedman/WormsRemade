@@ -6,6 +6,7 @@
 #include "Transform.hpp"
 #include "Renderable.hpp"
 #include "Coordinator.hpp"
+#include "Logger.hpp"
 
 extern Coordinator g_coordinator; // ??
  
@@ -19,6 +20,8 @@ extern Coordinator g_coordinator; // ??
 */
 void RenderSystem::Init(SDL_Window* window, std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_paths)
 {
+    DEFINE_CLASS_NAME("RenderSystem")
+
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::RESIZED, RenderSystem::WindowSizeListener));
     g_coordinator.AddEventListener(METHOD_LISTENER(Events::Window::QUIT, RenderSystem::QuitListener));
 
@@ -26,25 +29,19 @@ void RenderSystem::Init(SDL_Window* window, std::vector<std::vector<unsigned int
 
     if(!m_renderer)
     {
-#ifdef LOG_ENABLED
-        std::cerr << "RenderSystem::Init - Error: " << SDL_GetError() << std::endl;
-#endif
+        LOGERR(SDL_GetError());
 
         g_coordinator.SendEvent(Events::Window::QUIT);
     }
 
     if(SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 0))
     {
-#ifdef LOG_ENABLED
-        std::cerr << "RenderSystem::Init - Error: " << SDL_GetError() << std::endl;
-#endif
+        LOGERR(SDL_GetError());
 
         g_coordinator.SendEvent(Events::Window::QUIT);
     }
 
-#ifdef LOG_ENABLED
-    std::cout << "RenderSystem::Init - Renderer Created." << std::endl;
-#endif
+    LOG("Renderer created.");
 
     LoadTextures(texture_paths);
 
@@ -77,9 +74,8 @@ void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
     // load the textures and add them to the texture data vector
     for (const char* texture_path : texture_paths)
     {
-#ifdef LOG_ENABLED
-        std::cout << "RenderSystem::LoadTextures - Loading texture: " << texture_path << std::endl;
-#endif
+        LOG(std::string("Loading texture: ") + texture_path);
+
         // create the texture path
         last_backslash = bin_fldr_path.rfind('/');
         second_last_backslash = bin_fldr_path.rfind('/', last_backslash - 1);
@@ -89,11 +85,11 @@ void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
         texture = IMG_LoadTexture(m_renderer, whole_texture_path.c_str());
         if (!texture)
         {
-#ifdef LOG_ENABLED
-            std::cerr << "RenderSystem::LoadTextures - Error: " << IMG_GetError() << std::endl;
-            std::cout << "RenderSystem::LoadTextures - Quitting.." << std::endl;
-#endif 
+            LOGERR(IMG_GetError());
+            LOG("Qutting..");
+
             Quit();
+
             break;
         }
         m_texture_data.push_back(texture);
@@ -102,9 +98,7 @@ void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
 
 void RenderSystem::LoadTilemap(std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_paths)
 {
-#ifdef LOG_ENABLED
-    std::cout << "RenderSystem::LoadTilemap - Loading tilemap.." << std::endl;
-#endif
+    LOG("Loading tilemap..");
 
     // Create tilemap entities
     for (size_t y = 0; y < tilemap.size(); y++)
@@ -144,9 +138,7 @@ void RenderSystem::LoadTilemap(std::vector<std::vector<unsigned int>> const& til
         }
     }
 
-#ifdef LOG_ENABLED
-    std::cout << "RenderSystem::LoadTilemap - Tilemap loaded." << std::endl;
-#endif
+    LOG("Tilemap loaded.");
 }
 
 void RenderSystem::Update(float dt)
@@ -195,17 +187,12 @@ void RenderSystem::QuitListener(Event& event)
     {
         SDL_DestroyRenderer(m_renderer);
 
-#ifdef LOG_ENABLED
-        std::cout << "RenderSystem::QuitListener - SDL Renderer Destroyed." << std::endl;
-#endif
+        LOG("SDL renderer destroyed.");
     }
-
-#ifdef LOG_ENABLED
     else
     {
-        std::cout << "RenderSystem::QuitListener - Nothing to do, renderer was not initialized." << std::endl;
+        LOG("Nothing to do, renderer was not initialized.");
     }
-#endif
 }
 
 /*
@@ -221,20 +208,14 @@ void RenderSystem::Quit()
     {
         SDL_DestroyRenderer(m_renderer);
 
-#ifdef LOG_ENABLED
-        std::cout << "RenderSystem::QuitListener - SDL Renderer Destroyed." << std::endl;
-#endif
+        LOG("SDL renderer Destroyed.");
         g_coordinator.SendEvent(Events::Window::QUIT);
 
-#ifdef LOG_ENABLED
-        std::cout << "RenderSystem::QuitListener - Sent quit event." << std::endl;
-#endif
+        LOG("Sent quit event.");
     }
     else
     {
         g_coordinator.SendEvent(Events::Window::QUIT);
-#ifdef LOG_ENABLED
-        std::cout << "RenderSystem::QuitListener - Sent quit event." << std::endl;
-#endif
+        LOG("Sent quit event.");
     }
 }
