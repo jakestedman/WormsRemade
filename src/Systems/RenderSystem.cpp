@@ -7,6 +7,8 @@
 #include "Renderable.hpp"
 #include "Coordinator.hpp"
 #include "Logger.hpp"
+#include "Config.hpp"
+#include "Player.hpp"
 
 extern Coordinator g_coordinator; // ??
  
@@ -46,14 +48,9 @@ void RenderSystem::Init(SDL_Window* window, std::vector<std::vector<unsigned int
     LoadTextures(texture_paths);
 
     // Add entities here
-    m_camera = g_coordinator.CreateEntity();
-    g_coordinator.AddComponent(
-        m_camera,
-        Transform{
-            .position = Vec2(0.0f, 0.0f)
-        });
 
     LoadTilemap(tilemap, texture_paths);
+    LoadPlayer();
 }
 
 /*
@@ -65,24 +62,17 @@ void RenderSystem::Init(SDL_Window* window, std::vector<std::vector<unsigned int
 void RenderSystem::LoadTextures(std::vector<const char*> const& texture_paths)
 {
     SDL_Texture* texture;
-    std::string bin_fldr_path = std::filesystem::current_path();
-    std::string workspace_path;
-    std::string whole_texture_path;
-    unsigned int last_backslash;
-    unsigned int second_last_backslash;
 
-    // load the textures and add them to the texture data vector
+    // Load the tilemap textures and add them to the texture data vector
     for (const char* texture_path : texture_paths)
     {
         LOG(std::string("Loading texture: ") + texture_path);
+        std::string whole_texture_path = Config::workplace_folder;
 
-        // create the texture path
-        last_backslash = bin_fldr_path.rfind('/');
-        second_last_backslash = bin_fldr_path.rfind('/', last_backslash - 1);
-        workspace_path = bin_fldr_path.substr(0, second_last_backslash);
-        whole_texture_path = workspace_path.append(texture_path);
+        whole_texture_path.append(texture_path);
 
         texture = IMG_LoadTexture(m_renderer, whole_texture_path.c_str());
+        
         if (!texture)
         {
             LOGERR(IMG_GetError());
@@ -141,11 +131,54 @@ void RenderSystem::LoadTilemap(std::vector<std::vector<unsigned int>> const& til
     LOG("Tilemap loaded.");
 }
 
+void RenderSystem::LoadPlayer()
+{
+    LOG("Loading player..");
+    std::string texture_path = Config::workplace_folder;
+    SDL_Texture* texture;
+    texture_path.append("/assets/jake-assets/guy-1.png");
+
+    // Load the player texture
+    texture = IMG_LoadTexture(m_renderer, texture_path.c_str());
+    m_texture_data.push_back(texture);
+
+    if (!texture)
+    {
+        LOGERR(IMG_GetError());
+    }
+
+    // Load player entity
+    m_player = g_coordinator.CreateEntity();
+
+    g_coordinator.AddComponent(
+        m_player,
+        Player{}
+    );
+
+    g_coordinator.AddComponent(
+        m_player,
+        Transform{
+            .position = Vec2(120.0f, 120.0f)
+        });
+
+    // Add the last texture since it was the last one we added
+    g_coordinator.AddComponent(
+        m_player,
+        Renderable{
+            .texture = m_texture_data.back(),
+            .path = texture_path
+        });
+
+    LOG("Player loaded.");
+}
+
 void RenderSystem::Update(float dt)
 {    
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
     SDL_RenderClear(m_renderer);
 
+    auto& player_renderable = g_coordinator.GetComponent<Renderable>(m_player);
+    auto& player_transform = g_coordinator.GetComponent<Transform>(m_player);
 
     // get each tra
     for (auto const& entity : m_entities)
@@ -171,6 +204,20 @@ void RenderSystem::Update(float dt)
         // dst.x
         SDL_RenderCopy(m_renderer, renderable.texture, &src, &dest);
     }
+
+    SDL_Rect src;
+    src.x = 0;
+    src.y = 0;
+    src.w = 32;
+    src.h = 32;
+
+    SDL_Rect dest;
+    dest.x = player_transform.position.x;
+    dest.y = player_transform.position.y;
+    dest.w = 32;
+    dest.h = 32;
+    
+    SDL_RenderCopy(m_renderer, player_renderable.texture, &src, &dest);
 
     // update user position
     // update tilemap for example any explosions

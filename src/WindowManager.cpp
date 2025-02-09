@@ -46,9 +46,41 @@ void WindowManager::HandleEvents()
 {
     SDL_Event event;
     SDL_PollEvent(&event);
+    Event ecs_event(Events::Window::INPUT);
 
     switch (event.type)
     {
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_w)
+        {
+            m_key_pressed.set(static_cast<std::size_t>(InputButtons::W));
+        }
+        if (event.key.keysym.sym == SDLK_a)
+        {
+            m_key_pressed.set(static_cast<std::size_t>(InputButtons::A));
+        }
+        if (event.key.keysym.sym == SDLK_s)
+        {
+            m_key_pressed.set(static_cast<std::size_t>(InputButtons::S));
+        }
+        if (event.key.keysym.sym == SDLK_d)
+        { 
+            m_key_pressed.set(static_cast<std::size_t>(InputButtons::D));
+        }
+
+        ecs_event.SetParam(Events::Window::Input::INPUT, m_key_pressed);
+        g_coordinator.SendEvent(ecs_event);
+        
+        break;
+
+    case SDL_KEYUP:
+        m_key_pressed.reset();
+        ecs_event.SetParam(Events::Window::Input::INPUT, m_key_pressed);
+        g_coordinator.SendEvent(ecs_event);
+
+        break;
+        
+
     case SDL_QUIT:
         LOG("Quitting..");
 

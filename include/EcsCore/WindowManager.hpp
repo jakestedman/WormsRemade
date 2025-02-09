@@ -14,4 +14,5 @@ public:
 
 private:
     SDL_Window* m_window = nullptr;
+    std::bitset<8> m_key_pressed;
 };

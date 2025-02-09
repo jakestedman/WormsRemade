@@ -4,6 +4,7 @@
 #include "Thrust.hpp"
 #include "Transform.hpp"
 #include "Coordinator.hpp"
+#include "Logger.hpp"
 
 
 extern Coordinator g_coordinator;
@@ -16,46 +17,35 @@ void PlayerControlSystem::Init()
 
 void PlayerControlSystem::Update(float dt)
 {
-	//for (auto& entity : m_entities)
-	//{
-	//	auto& transform = g_coordinator.Get<Transform>(entity);
+	for (auto& entity : m_entities)
+	{
+		auto& transform = g_coordinator.GetComponent<Transform>(entity);
 
+		if (m_buttons.test(static_cast<std::size_t>(InputButtons::W)))
+		{
+			transform.position.y -= (dt * m_player_speed);
+		}
 
-	//	if (mButtons.test(static_cast<std::size_t>(InputButtons::W)))
-	//	{
-	//		transform.position.z += (dt * 10.0f);
-	//	}
+		else if (m_buttons.test(static_cast<std::size_t>(InputButtons::S)))
+		{
+			transform.position.y += (dt * m_player_speed);
+		}
 
-	//	else if (mButtons.test(static_cast<std::size_t>(InputButtons::S)))
-	//	{
-	//		transform.position.z -= (dt * 10.0f);
-	//	}
+		if (m_buttons.test(static_cast<std::size_t>(InputButtons::A)))
+		{
+			transform.position.x -= (dt * m_player_speed);
+		}
 
+		else if (m_buttons.test(static_cast<std::size_t>(InputButtons::D)))
+		{
+			transform.position.x += (dt * m_player_speed);
+		}
 
-	//	if (mButtons.test(static_cast<std::size_t>(InputButtons::Q)))
-	//	{
-	//		transform.position.y += (dt * 10.0f);
-	//	}
-
-	//	else if (mButtons.test(static_cast<std::size_t>(InputButtons::E)))
-	//	{
-	//		transform.position.y -= (dt * 10.0f);
-	//	}
-
-
-	//	if (mButtons.test(static_cast<std::size_t>(InputButtons::A)))
-	//	{
-	//		transform.position.x += (dt * 10.0f);
-	//	}
-
-	//	else if (mButtons.test(static_cast<std::size_t>(InputButtons::D)))
-	//	{
-	//		transform.position.x -= (dt * 10.0f);
-	//	}
-	//}
+		LOG("Player (" + std::to_string(static_cast<int>(round(transform.position.x))) + ", " + std::to_string(static_cast<int>(round(transform.position.y))) + ")");
+	}
 }
 
 void PlayerControlSystem::InputListener(Event& event)
 {
-	mButtons = event.GetParam<std::bitset<8>>(Events::Window::Input::INPUT);
+	m_buttons = event.GetParam<std::bitset<8>>(Events::Window::Input::INPUT);
 }

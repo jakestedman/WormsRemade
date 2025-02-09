@@ -25,7 +25,7 @@ public:
     void Init(SDL_Window* window, std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_data);
     void LoadTextures(std::vector<const char*> const& texture_data);
     void LoadTilemap(std::vector<std::vector<unsigned int>> const& tilemap, std::vector<const char*> const& texture_paths);
-    void RenderTilemap(std::vector<std::vector<unsigned int>>);
+    void LoadPlayer();
     void Update(float dt);
 
 private:
@@ -38,6 +38,6 @@ private:
     void Quit();
 
     //std::unique_ptr<Shader> shader;
-    Entity m_camera;
+    Entity m_player;
 
 };

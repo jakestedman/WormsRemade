@@ -13,6 +13,7 @@
 #include "Coordinator.hpp"
 #include "PhysicsSystem.hpp"
 #include "RenderSystem.hpp"
+#include "PlayerControlSystem.hpp"
 #include "WindowManager.hpp"
 #include "Tilemaps.hpp"
 #include "Logger.hpp"
@@ -38,11 +39,11 @@ int main()
 	g_coordinator.AddEventListener(FUNCTION_LISTENER(Events::Window::QUIT, QuitListener));
 	g_coordinator.RegisterComponent<Transform>();
 	g_coordinator.RegisterComponent<Renderable>();
+	g_coordinator.RegisterComponent<Player>();
 
     /*
 	g_coordinator.RegisterComponent<Camera>();
 	g_coordinator.RegisterComponent<Gravity>();
-	g_coordinator.RegisterComponent<Player>();
 	g_coordinator.RegisterComponent<RigidBody>();
 	g_coordinator.RegisterComponent<Thrust>();
     */
@@ -67,7 +68,7 @@ int main()
 		g_coordinator.SetSystemSignature<CameraControlSystem>(signature);
 	}
 	camera_control_system->Init();
-
+	*/
 	auto player_control_system = g_coordinator.RegisterSystem<PlayerControlSystem>();
 	{
 		Signature signature;
@@ -76,7 +77,7 @@ int main()
 		g_coordinator.SetSystemSignature<PlayerControlSystem>(signature);
 	}
 	player_control_system->Init();
-    */
+    
 
 	auto render_system = g_coordinator.RegisterSystem<RenderSystem>();
 	{
@@ -87,49 +88,43 @@ int main()
 	}
 	render_system->Init(window_manager->GetWindow(), LEVEL_0_TILEMAP, LEVEL_0_TEXTURE_DATA);
 
-	std::vector<Entity> entities(MAX_ENTITIES - 1);
+	//std::vector<Entity> entities(MAX_ENTITIES - 1);
 
-	std::default_random_engine generator;
-	std::uniform_real_distribution<float> rand_position(-100.0f, 100.0f);
-	std::uniform_real_distribution<float> rand_rotation(0.0f, 3.0f);
-	std::uniform_real_distribution<float> rand_scale(3.0f, 5.0f);
-	std::uniform_real_distribution<float> rand_color(0.0f, 1.0f);
-	std::uniform_real_distribution<float> rand_gravity(-10.0f, -1.0f);
+	// for (auto& entity : entities)
+	// {
+	// 	entity = g_coordinator.CreateEntity();
+	// 	g_coordinator.AddComponent(entity, Player{});
+	// 	g_coordinator.AddComponent(
+	// 		entity, 
+	// 		Transform{
+	// 			.position = Vec2(120, 120)
+	// 		});
 
-	float scale = rand_scale(generator);
+	// 	// g_coordinator.AddComponent<Gravity>(
+	// 	// 	entity,
+	// 	// 	{Vec3(0.0f, rand_gravity(generator), 0.0f)});
 
-    /*
-	for (auto& entity : entities)
-	{
-		entity = g_coordinator.CreateEntity();
-		g_coordinator.AddComponent(entity, Player{});
+	// 	// g_coordinator.AddComponent(
+	// 	// 	entity,
+	// 	// 	RigidBody{
+	// 	// 		.velocity = Vec3(0.0f, 0.0f, 0.0f),
+	// 	// 		.acceleration = Vec3(0.0f, 0.0f, 0.0f)
+	// 	// 	});
 
-		g_coordinator.AddComponent<Gravity>(
-			entity,
-			{Vec3(0.0f, rand_gravity(generator), 0.0f)});
+	// 	// g_coordinator.AddComponent(
+	// 	// 	entity,
+	// 	// 	Transform{
+	// 	// 		.position = Vec3(rand_position(generator), rand_position(generator), rand_position(generator)),
+	// 	// 		.rotation = Vec3(rand_rotation(generator), rand_rotation(generator), rand_rotation(generator)),
+	// 	// 		.scale = Vec3(scale, scale, scale)
+	// 	// 	});
 
-		g_coordinator.AddComponent(
-			entity,
-			RigidBody{
-				.velocity = Vec3(0.0f, 0.0f, 0.0f),
-				.acceleration = Vec3(0.0f, 0.0f, 0.0f)
-			});
-
-		g_coordinator.AddComponent(
-			entity,
-			Transform{
-				.position = Vec3(rand_position(generator), rand_position(generator), rand_position(generator)),
-				.rotation = Vec3(rand_rotation(generator), rand_rotation(generator), rand_rotation(generator)),
-				.scale = Vec3(scale, scale, scale)
-			});
-
-		g_coordinator.AddComponent(
-			entity,
-			Renderable{
-				.color = Vec3(rand_color(generator), rand_color(generator), rand_color(generator))
-			});
-	}
-    */
+	// 	// g_coordinator.AddComponent(
+	// 	// 	entity,
+	// 	// 	Renderable{
+	// 	// 		.color = Vec3(rand_color(generator), rand_color(generator), rand_color(generator))
+	// 	// 	});
+	// }
 
 	float dt = 0.0f;
 
@@ -138,10 +133,9 @@ int main()
 		auto start_time = std::chrono::high_resolution_clock::now();
 
 		window_manager->HandleEvents(); // Check if any keys have been pressed
-
-        /*
+        
 		player_control_system->Update(dt); // Move the player based on what keys have been pressed
-
+		/*
 		camera_control_system->Update(dt); // Move the camera based on what keys have been pressed
         */
 

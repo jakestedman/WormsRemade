@@ -5,6 +5,7 @@
 #include <cassert>
 #include <queue>
 
+#include "Logger.hpp"
 
 class EntityManager
 {
@@ -25,6 +26,7 @@ public:
 		mAvailableEntities.pop();
 		++mLivingEntityCount;
 
+		LOG("Living entities: " + std::to_string(mLivingEntityCount));
 		return id;
 	}
 
@@ -35,6 +37,8 @@ public:
 		mSignatures[entity].reset();
 		mAvailableEntities.push(entity);
 		--mLivingEntityCount;
+
+		LOG("Living entities: " + std::to_string(mLivingEntityCount));
 	}
 
 	void SetSignature(Entity entity, Signature signature)
